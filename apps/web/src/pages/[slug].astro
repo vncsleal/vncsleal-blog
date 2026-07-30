@@ -1,0 +1,148 @@
+---
+import Base from "../layouts/Base.astro"
+import ProgressBar from "../components/ProgressBar.astro"
+import Lightbox from "../components/Lightbox.astro"
+import Blocks from "../components/Blocks.astro"
+import { store } from "../adapters/sanity"
+import { compilePost } from "@blog/artifacts"
+import { img, formatDateLong, formatDate, readingTime } from "../lib/utils"
+
+const { slug } = Astro.params
+
+const [postData, authorData, allPosts] = await Promise.all([
+  store.getPost(slug!),
+  store.getAuthor(),
+  store.getPosts(),
+])
+
+if (!postData) {
+  return Astro.redirect("/404")
+}
+
+const { post, author } = compilePost(postData, authorData)
+
+const blocks: any[] = Array.isArray(post.body) ? post.body : []
+const minutes = readingTime(blocks)
+
+const currentIndex = allPosts.findIndex((p) => p.slug === slug)
+const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null
+const olderPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
+const nextStory = olderPost ?? newerPost
+
+const titleChars = (() => {
+  let ki = 0
+  return post.title.split(" ").map((word) => word.split("").map((ch) => ({ ch, ki: ki++ })))
+})()
+---
+
+<Base title={post.title} description={post.description}>
+  <ProgressBar />
+
+  <article class="article">
+    {
+      post.cover && (
+        <div class="a-cover">
+          <div class="a-cover-frame" data-parallax>
+            <img
+              src={img(post.cover, 1600)}
+              alt=""
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+      )
+    }
+
+    <header class:list={["a-hero", { "no-cover": !post.cover }]}>
+      <p class="mono a-kicker" data-reveal>
+        {post.topics && post.topics.length > 0 && (
+          <span class="topics">{post.topics.join(" · ")}</span>
+        )}
+        <span>{formatDateLong(post.date)}</span>
+      </p>
+
+      <h1 class="a-title" data-kinetic aria-label={post.title}>
+        {
+          titleChars.map((word, wi) => (
+            <>
+              {wi > 0 && " "}
+              <span class="kn-word" aria-hidden="true">
+                {word.map(({ ch, ki }) => (
+                  <span class="kn-mask">
+                    <span class="kn-char" style={`--ki:${ki}`}>{ch}</span>
+                  </span>
+                ))}
+              </span>
+            </>
+          ))
+        }
+      </h1>
+
+      <div class="mono a-meta" data-reveal>
+        {author && <span>{author.name}</span>}
+        <span class="sep" aria-hidden="true"></span>
+        <span>{minutes} min de leitura</span>
+      </div>
+
+      {post.description && <p class="a-lede" data-reveal>{post.description}</p>}
+    </header>
+
+    <div class="a-body">
+      <Blocks blocks={blocks} dropcap />
+    </div>
+
+    <footer class="a-foot">
+      {
+        post.topics && post.topics.length > 0 && (
+          <div class="a-tags">
+            {post.topics.map((topic) => (
+              <a class="pill" href={`/?topic=${topic}`}>
+                {topic}
+              </a>
+            ))}
+          </div>
+        )
+      }
+
+      <nav class="mono a-nav" aria-label="Mais ensaios">
+        {newerPost ? <a href={`/${newerPost.slug}`}>← Mais recente</a> : <span />}
+        <a href="/" class="all">Todos os ensaios</a>
+        {olderPost ? <a href={`/${olderPost.slug}`}>Mais antigo →</a> : <span />}
+      </nav>
+    </footer>
+  </article>
+
+  {
+    nextStory && (
+      <section class="next-story">
+        <a
+          href={`/${nextStory.slug}`}
+          data-hero={nextStory.cover ? img(nextStory.cover, 1600) : undefined}
+        >
+          <p class="mono next-kicker">Próximo ensaio</p>
+          <div class="next-body">
+            <div>
+              <h2 class="next-title">{nextStory.title}</h2>
+              <p class="mono next-date">
+                {formatDate(nextStory.date)}
+                <span class="arrow" aria-hidden="true">→</span>
+              </p>
+            </div>
+            {nextStory.cover && (
+              <div class="next-cover">
+                <img
+                  src={img(nextStory.cover, 960)}
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
+            )}
+          </div>
+        </a>
+      </section>
+    )
+  }
+
+  <Lightbox />
+</Base>

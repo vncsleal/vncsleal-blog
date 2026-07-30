@@ -1,0 +1,58 @@
+import { onFrame, onCleanup, scrollLock } from "./core"
+
+/**
+ * Article page interactions: reading progress + image lightbox.
+ */
+
+export function initProgress(): void {
+  const fill = document.querySelector<HTMLElement>("[data-progress-fill]")
+  if (!fill) return
+
+  onFrame(() => {
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    const f = max > 0 ? Math.min(window.scrollY / max, 1) : 0
+    fill.style.transform = `scaleX(${f.toFixed(4)})`
+  })
+}
+
+export function initLightbox(): void {
+  const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox-dialog]")
+  const dialogImg = dialog?.querySelector<HTMLImageElement>("[data-lightbox-img]")
+  const figures = Array.from(document.querySelectorAll<HTMLImageElement>("[data-lightbox]"))
+  if (!dialog || !dialogImg || figures.length === 0) return
+
+  const open = (img: HTMLImageElement) => {
+    const src = img.currentSrc || img.src
+    if (!src) return
+    // Request a larger rendition from the CDN
+    dialogImg.src = src.replace(/w=\d+/, "w=1800")
+    dialog.showModal()
+    requestAnimationFrame(() => dialog.classList.add("is-open"))
+    scrollLock(true)
+  }
+
+  const close = () => {
+    dialog.classList.remove("is-open")
+    scrollLock(false)
+    window.setTimeout(() => dialog.close(), 220)
+  }
+
+  const onFigureClick = (e: Event) => open(e.currentTarget as HTMLImageElement)
+  const onDialogClick = () => close()
+  const onCancel = (e: Event) => {
+    e.preventDefault()
+    close()
+  }
+
+  figures.forEach((img) => img.addEventListener("click", onFigureClick))
+  dialog.addEventListener("click", onDialogClick)
+  dialog.addEventListener("cancel", onCancel)
+
+  onCleanup(() => {
+    figures.forEach((img) => img.removeEventListener("click", onFigureClick))
+    dialog.removeEventListener("click", onDialogClick)
+    dialog.removeEventListener("cancel", onCancel)
+    if (dialog.open) dialog.close()
+    scrollLock(false)
+  })
+}

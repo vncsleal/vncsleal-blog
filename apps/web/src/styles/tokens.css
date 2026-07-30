@@ -1,0 +1,42 @@
+/* ─────────────────────────────────────────────
+   WHITE-BOX CINEMA — Design Tokens
+   Light editorial system. Signal red accent.
+   ───────────────────────────────────────────── */
+
+:root {
+  /* Color */
+  --paper: #ffffff;
+  --paper-dim: #f4f4f5;
+  --ink: #0b0b0c;
+  --ink-soft: #54545a;
+  --ink-mute: #9b9ba1;
+  --hairline: #e8e8e6;
+  --accent: #e8321e;
+  --accent-deep: #c42412;
+
+  /* Typography */
+  --font-display: "Archivo", "Inter Tight", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Metrics */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 1600px;
+  --topbar-h: 3.5rem;
+  --article-w: 42.5rem;
+
+  /* Motion */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swift: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 0.2s;
+  --dur-2: 0.45s;
+  --dur-3: 0.9s;
+
+  /* Layers */
+  --z-topbar: 50;
+  --z-preview: 80;
+  --z-palette: 100;
+  --z-progress: 110;
+  --z-lightbox: 120;
+}

@@ -1,0 +1,193 @@
+---
+import Base from "../layouts/Base.astro"
+import { store } from "../adapters/sanity"
+import { compileBlog } from "@blog/artifacts"
+import { img, formatDate } from "../lib/utils"
+
+const topicFilter = Astro.url.searchParams.get("topic")
+
+const [posts, blog, home, allTopics] = await Promise.all([
+  store.getPosts(),
+  store.getBlog(),
+  store.getHome(),
+  store.getTopics(),
+])
+
+const filtered = topicFilter
+  ? posts.filter((p) => p.topics?.includes(topicFilter))
+  : posts
+
+const page = compileBlog(filtered, blog)
+
+const usedSlugs = new Set(posts.flatMap((p) => p.topics ?? []))
+const topics = allTopics.filter((t) => usedSlugs.has(t.slug))
+
+const [featured, ...rest] = page.posts
+const announcement = home?.announcement ?? null
+
+const titleChars = (() => {
+  let ki = 0
+  return page.pageTitle.split(" ").map((word) => word.split("").map((ch) => ({ ch, ki: ki++ })))
+})()
+---
+
+<Base title={page.seoTitle ?? null} description={page.seoDescription}>
+  <main class="home">
+    <section class="hero">
+      {
+        announcement && (
+          <p class="hero-announce" data-reveal>
+            <span class="dot" aria-hidden="true" />
+            {announcement}
+          </p>
+        )
+      }
+
+      <h1 class="hero-title" data-kinetic data-brand-title aria-label={page.pageTitle}>
+        {
+          titleChars.map((word, wi) => (
+            <>
+              {wi > 0 && " "}
+              <span class="kn-word" aria-hidden="true">
+                {word.map(({ ch, ki }) => (
+                  <span class="kn-mask">
+                    <span class:list={["kn-char", { accent: ch === "." }]} style={`--ki:${ki}`}>
+                      {ch}
+                    </span>
+                  </span>
+                ))}
+              </span>
+            </>
+          ))
+        }
+      </h1>
+
+      <div class="hero-foot">
+        <p class="hero-sub" data-reveal>
+          {page.seoDescription ?? "Ensaios sobre tecnologia, cultura e o ofício de fazer."}
+        </p>
+        <p class="mono hero-count" data-reveal>
+          {posts.length} {posts.length === 1 ? "ensaio" : "ensaios"}
+        </p>
+      </div>
+
+      <nav class="pills" aria-label="Filtrar por tema" data-reveal>
+        <a href="/" class:list={["pill", { active: !topicFilter }]}>Todos</a>
+        {
+          topics.map((topic) => (
+            <a
+              href={`/?topic=${topic.slug}`}
+              class:list={["pill", { active: topicFilter === topic.slug }]}
+            >
+              {topic.title}
+            </a>
+          ))
+        }
+        <a href="/rss.xml" class="pill pill-rss">RSS</a>
+      </nav>
+    </section>
+
+    {
+      featured && (
+        <section class="chapter" aria-label="Ensaio em destaque">
+          <div class="chapter-head">
+            <span class="mono">01</span>
+            <h2>Destaque</h2>
+            <span class="rule" aria-hidden="true" />
+          </div>
+          <a
+            class="featured"
+            href={`/${featured.slug}`}
+            data-hero={featured.cover ? img(featured.cover, 1600) : undefined}
+          >
+            <div class="featured-cover" data-parallax>
+              {featured.cover ? (
+                <img
+                  src={img(featured.cover, 1600)}
+                  alt=""
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              ) : (
+                <div class="cover-fallback" aria-hidden="true">
+                  {featured.title.charAt(0)}
+                </div>
+              )}
+            </div>
+            <div class="featured-body">
+              <p class="mono featured-meta">
+                <span>{formatDate(featured.date)}</span>
+                {featured.topics?.map((t) => <span>{t}</span>)}
+              </p>
+              <h3 data-reveal>{featured.title}</h3>
+              {featured.description && (
+                <p class="featured-desc" data-reveal>
+                  {featured.description}
+                </p>
+              )}
+              <span class="mono featured-read">
+                Ler ensaio <span class="arrow" aria-hidden="true">→</span>
+              </span>
+            </div>
+          </a>
+        </section>
+      )
+    }
+
+    {
+      rest.length > 0 && (
+        <section class="chapter" aria-label="Todos os ensaios">
+          <div class="chapter-head">
+            <span class="mono">02</span>
+            <h2>Índice</h2>
+            <span class="rule" aria-hidden="true" />
+          </div>
+          <ul class="rows">
+            {rest.map((post, i) => (
+              <li class="row" data-reveal>
+                <a
+                  href={`/${post.slug}`}
+                  data-preview={post.cover ? img(post.cover, 840) : undefined}
+                  data-hero={post.cover ? img(post.cover, 1600) : undefined}
+                >
+                  <span class="mono row-idx">{String(i + 2).padStart(2, "0")}</span>
+                  <span class="row-main">
+                    <time class="mono row-date" datetime={post.date}>
+                      {formatDate(post.date)}
+                    </time>
+                    <h3>{post.title}</h3>
+                    {post.description && <p class="row-desc">{post.description}</p>}
+                    {post.topics && post.topics.length > 0 && (
+                      <span class="mono row-topics">
+                        {post.topics.map((t) => (
+                          <span>{t}</span>
+                        ))}
+                      </span>
+                    )}
+                  </span>
+                  {post.cover && (
+                    <img
+                      class="row-thumb"
+                      src={img(post.cover, 480)}
+                      alt=""
+                      loading="lazy"
+                    />
+                  )}
+                  <span class="row-arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      page.posts.length === 0 && (
+        <p class="empty">{page.emptyState ?? "Nada publicado por aqui ainda."}</p>
+      )
+    }
+  </main>
+</Base>

@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro"
+import { store } from "../adapters/sanity"
+
+const posts = (await store.getPosts()).slice(0, 3)
+const code = "404".split("")
+---
+
+<Base title="404 — Página não encontrada">
+  <main class="nf">
+    <p class="mono nf-kicker" data-reveal>Erro — Página perdida</p>
+
+    <h1 class="nf-code" data-kinetic aria-label="404">
+      {
+        code.map((ch, i) => (
+          <span class="kn-mask" aria-hidden="true">
+            <span class="kn-char" style={`--ki:${i}`}>{ch}</span>
+          </span>
+        ))
+      }
+    </h1>
+
+    <p class="nf-msg" data-reveal>
+      A página que você procura não existe, ou mudou de lugar.
+    </p>
+
+    <a class="mono nf-cta" href="/" data-reveal>Voltar aos ensaios →</a>
+
+    {
+      posts.length > 0 && (
+        <div class="nf-latest" data-reveal>
+          <span class="mono">Ou comece por estes</span>
+          {posts.map((post) => (
+            <a href={`/${post.slug}`}>{post.title}</a>
+          ))}
+        </div>
+      )
+    }
+  </main>
+</Base>

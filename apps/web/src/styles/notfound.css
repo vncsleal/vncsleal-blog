@@ -1,0 +1,80 @@
+/* ── 404 ── */
+
+.nf {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(var(--topbar-h) + 4rem) var(--gutter) 4rem;
+  min-height: 80vh;
+}
+
+.nf-kicker {
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.nf-code {
+  font-family: var(--font-display);
+  font-variation-settings: "wght" 850, "wdth" 125;
+  font-size: clamp(7rem, 32vw, 26rem);
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+}
+
+.nf-msg {
+  margin-top: 1.75rem;
+  font-size: 1.125rem;
+  color: var(--ink-soft);
+  max-width: 40ch;
+  text-wrap: balance;
+}
+
+.nf-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 2.5rem;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.875rem 1.75rem;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.nf-cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.nf-latest {
+  margin-top: clamp(3rem, 8vh, 5rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--hairline);
+  width: min(30rem, 100%);
+}
+
+.nf-latest .mono {
+  color: var(--ink-mute);
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.nf-latest a {
+  display: block;
+  padding: 0.625rem 0;
+  font-family: var(--font-display);
+  font-variation-settings: "wght" 620, "wdth" 112;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nf-latest a:hover {
+  color: var(--accent);
+}

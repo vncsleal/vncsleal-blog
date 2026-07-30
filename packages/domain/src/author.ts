@@ -1,0 +1,15 @@
+import { z } from "zod"
+
+export const Author = z.object({
+  name: z.string(),
+  slug: z.string(),
+  email: z.string().optional(),
+  tagline: z.string().optional(),
+  location: z.string().optional(),
+  bio: z.string().optional(),
+  body: z.any().optional(),
+  photo: z.string().optional(),
+  social: z.record(z.string(), z.string()).optional(),
+})
+
+export type Author = z.infer<typeof Author>

@@ -1,0 +1,14 @@
+{
+  "name": "blog",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r --filter @blog/web dev",
+    "build": "pnpm -r --filter @blog/web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}

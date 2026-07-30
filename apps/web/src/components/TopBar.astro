@@ -1,0 +1,31 @@
+---
+interface Props {
+  siteTitle: string
+}
+
+const { siteTitle } = Astro.props
+
+const today = new Date()
+const dateLabel = today.toLocaleDateString("pt-BR", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+})
+---
+
+<header class="topbar" data-topbar>
+  <a href="/" class="wordmark" data-wordmark aria-label={`${siteTitle} — início`}>
+    {
+      siteTitle
+        .split("")
+        .map((ch) => (ch === "." ? <span class="accent">.</span> : ch))
+    }
+  </a>
+  <div class="topbar-side">
+    <time class="mono topbar-date" datetime={today.toISOString()}>{dateLabel}</time>
+    <button class="search-btn mono" type="button" data-palette-open aria-label="Abrir busca (Cmd+K)">
+      <span>Buscar</span>
+      <kbd>⌘K</kbd>
+    </button>
+  </div>
+</header>

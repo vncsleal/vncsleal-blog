@@ -1,0 +1,76 @@
+---
+import "../styles/global.css"
+import { ClientRouter } from "astro:transitions"
+import { store } from "../adapters/sanity"
+import TopBar from "../components/TopBar.astro"
+import Footer from "../components/Footer.astro"
+import CommandPalette from "../components/CommandPalette.astro"
+import CursorPreview from "../components/CursorPreview.astro"
+
+interface Props {
+  title?: string | null
+  description?: string | null
+}
+
+const { title, description } = Astro.props
+
+const [posts, topics, author, blog] = await Promise.all([
+  store.getPosts(),
+  store.getTopics(),
+  store.getAuthor(),
+  store.getBlog(),
+])
+
+const siteTitle = blog?.pageTitle ?? "VNCS."
+const pageTitle = title
+  ? title.includes(siteTitle)
+    ? title
+    : `${title} — ${siteTitle}`
+  : siteTitle
+
+const searchIndex = {
+  posts: posts.map((p) => ({
+    s: p.slug,
+    t: p.title,
+    d: p.date,
+    x: p.description ?? "",
+    g: p.topics ?? [],
+  })),
+  topics: topics.map((t) => ({ s: t.slug, t: t.title })),
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ClientRouter />
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:type" content="website" />
+    {description && <meta property="og:description" content={description} />}
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <TopBar siteTitle={siteTitle} />
+    <slot />
+    <Footer author={author} siteTitle={siteTitle} />
+    <CommandPalette />
+    <CursorPreview />
+    <script is:inline type="application/json" data-search-index set:html={JSON.stringify(searchIndex)} />
+    <script>
+      import "../scripts/app"
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+/* ── View Transition choreography ──
+   One consistent scene change everywhere: the old scene blurs away,
+   the new one develops underneath right behind it. */
+
+::view-transition-old(root) {
+  animation: vt-scene-out 0.3s var(--ease-swift) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-scene-in 0.55s var(--ease-expo) 0.08s both;
+}
+
+@keyframes vt-scene-out {
+  to {
+    opacity: 0;
+    filter: blur(14px);
+  }
+}
+
+@keyframes vt-scene-in {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
