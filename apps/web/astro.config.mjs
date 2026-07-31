@@ -14,6 +14,7 @@ export default defineConfig({
   output: "server",
   adapter: cloudflare({
     imageService: false,
+    mode: "directory",
   }),
   integrations: [
     sanity({
