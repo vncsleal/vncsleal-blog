@@ -10,7 +10,7 @@
     "typecheck": "astro check"
   },
   "dependencies": {
-    "@astrojs/vercel": "^11.0.0",
+    "@astrojs/cloudflare": "^14.1.7",
     "@blog/adapter-sanity": "workspace:*",
     "@blog/artifacts": "workspace:*",
     "@blog/domain": "workspace:*",

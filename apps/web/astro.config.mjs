@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config"
 import { loadEnv } from "vite"
-import vercel from "@astrojs/vercel"
+import cloudflare from "@astrojs/cloudflare"
 import sanity from "@sanity/astro"
 
 const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
@@ -10,9 +10,11 @@ const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
 )
 
 export default defineConfig({
-  site: "https://vncsleal-blog.vercel.app",
+  site: "https://vncsleal.pages.dev",
   output: "server",
-  adapter: vercel(),
+  adapter: cloudflare({
+    imageService: false,
+  }),
   integrations: [
     sanity({
       projectId: PUBLIC_SANITY_PROJECT_ID,

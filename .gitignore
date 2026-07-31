@@ -8,3 +8,5 @@ dist/
 .vite/
 .vercel/
 .astro/
+.wrangler/
+.dev.vars
