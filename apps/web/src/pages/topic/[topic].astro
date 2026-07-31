@@ -27,6 +27,7 @@ const page = compileBlog(filtered, blog)
 
 const usedSlugs = new Set(posts.flatMap((p) => p.topics ?? []))
 const topics = allTopics.filter((t) => usedSlugs.has(t.slug))
+const activeTopic = topics.find((t) => t.slug === topic) ?? null
 
 const [main, sideA, sideB, ...rest] = page.posts
 const featured = [main, sideA, sideB].filter(Boolean)
@@ -36,7 +37,7 @@ const featured = [main, sideA, sideB].filter(Boolean)
   <main class="home">
     <HomeHero
       pageTitle={page.pageTitle}
-      tagline={page.tagline}
+      tagline={activeTopic?.description ?? page.tagline}
       topics={topics}
       activeTopic={topic!}
     />
