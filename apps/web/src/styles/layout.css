@@ -150,6 +150,10 @@
   padding-inline: var(--gutter);
 }
 
+.chapter + .chapter {
+  margin-top: clamp(3rem, 7vh, 5rem);
+}
+
 .chapter-head {
   display: flex;
   align-items: baseline;
@@ -167,18 +171,10 @@
   color: var(--ink);
 }
 
-.chapter-head .rule {
-  flex: 1;
-  height: 1px;
-  background: var(--hairline);
-  transform-origin: left;
-}
-
 /* ── Footer ── */
 
 .footer {
   margin-top: auto;
-  border-top: 1px solid var(--hairline);
   padding: clamp(3rem, 7vh, 5rem) var(--gutter) 0;
   overflow: hidden;
 }
@@ -256,33 +252,12 @@
   transition: color 0.2s ease;
 }
 
-.footer-author-socials {
-  margin-top: 0.75rem;
-}
-
 .footer-bio {
   margin-top: 0.625rem;
   color: var(--ink-soft);
   font-size: 0.9375rem;
   line-height: 1.6;
   max-width: 46ch;
-}
-
-.footer-social {
-  display: flex;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  margin-top: 1.125rem;
-}
-
-.footer-social a {
-  color: var(--ink-mute);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.footer-social a:hover {
-  color: var(--accent);
 }
 
 .footer-links {
@@ -303,20 +278,29 @@
   color: var(--ink);
 }
 
+.footer-word-row {
+  max-width: var(--maxw);
+  margin: clamp(2.5rem, 6vh, 4.5rem) auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+
 .footer-word {
   font-family: var(--font-display);
   font-variation-settings: "wght" 850, "wdth" 125;
-  font-size: clamp(4.5rem, 24vw, 24rem);
+  font-size: clamp(3.5rem, 15vw, 14rem);
   line-height: 0.78;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  text-align: center;
   color: var(--paper-dim);
   -webkit-text-stroke: 1px var(--hairline);
-  margin-top: clamp(2.5rem, 6vh, 4.5rem);
-  transform: translateY(0.12em);
   user-select: none;
   white-space: nowrap;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
 }
 
 .footer-word .accent {
@@ -324,24 +308,104 @@
   -webkit-text-stroke: 0;
 }
 
-.footer-base {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  color: var(--ink-mute);
-  padding: 1.5rem 0 2rem;
+/* ── Spinning ring (credit line) ── */
+
+.footer-spin-section {
+  flex-shrink: 0;
+  /* line-height 0.78 no VNCS empurra o glifo 0.11em pra baixo do box —
+     desloca o anel o mesmo tanto pra alinhar com o texto visível */
+  transform: translateY(calc(clamp(3.5rem, 15vw, 14rem) * 0.11));
 }
 
-.footer-base a {
-  color: var(--ink-mute);
-  text-decoration: none;
+.spin-ring-wrap {
+  position: relative;
+  display: inline-block;
+  width: clamp(200px, 24vw, 264px);
+  height: clamp(200px, 24vw, 264px);
+  border-radius: 50%;
 }
 
-.footer-base a:hover {
-  color: var(--ink);
+.spin-ring {
+  position: absolute;
+  inset: 0;
+  animation: spin-ring 22s linear infinite;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  --spin-radius: 13;
+}
+
+.spin-letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-block;
+  transform: translate(-50%, -50%)
+    rotate(calc(360deg / var(--total) * var(--i)))
+    translateY(calc(var(--spin-radius, 11) * -1ch));
+}
+
+.spin-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(72px, 8vw, 100px);
+  height: clamp(72px, 8vw, 100px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@keyframes spin-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-ring {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .footer-word-row {
+    flex-direction: column;
+    gap: clamp(2rem, 8vw, 4rem);
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: 0;
+  }
+
+  .footer-word {
+    text-align: center;
+    font-size: 24vw;
+    width: 100%;
+  }
+
+  .footer-spin-section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spin-ring-wrap {
+    width: clamp(240px, 60vw, 320px);
+    height: clamp(240px, 60vw, 320px);
+  }
+
+  .spin-ring {
+    font-size: 0.65rem;
+    --spin-radius: 16;
+  }
+
+  .spin-logo {
+    width: clamp(96px, 24vw, 128px);
+    height: clamp(96px, 24vw, 128px);
+  }
 }
 
 @media (max-width: 700px) {

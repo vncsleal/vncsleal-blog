@@ -44,22 +44,26 @@ const titleChars = (() => {
   <ProgressBar />
 
   <article class="article">
-    {
-      post.cover && (
-        <div class="a-cover">
-          <div class="a-cover-frame" data-parallax>
+    <div class="a-cover">
+      <div class="a-cover-frame" data-parallax>
+        {
+          post.cover ? (
             <img
               src={img(post.cover, 1600)}
               alt=""
               loading="eager"
               fetchpriority="high"
             />
-          </div>
-        </div>
-      )
-    }
+          ) : (
+            <div class="cover-fallback" aria-hidden="true">
+              {post.title.charAt(0)}
+            </div>
+          )
+        }
+      </div>
+    </div>
 
-    <header class:list={["a-hero", { "no-cover": !post.cover }]}>
+    <header class="a-hero">
       <p class="mono a-kicker" data-reveal>
         {post.topics && post.topics.length > 0 && (
           <span class="topics">{post.topics.join(" · ")}</span>
@@ -102,7 +106,7 @@ const titleChars = (() => {
         post.topics && post.topics.length > 0 && (
           <div class="a-tags">
             {post.topics.map((topic) => (
-              <a class="pill" href={`/?topic=${topic}`}>
+              <a class="pill" href={`/topic/${topic}`}>
                 {topic}
               </a>
             ))}

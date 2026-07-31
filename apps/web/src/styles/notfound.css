@@ -55,7 +55,6 @@
 .nf-latest {
   margin-top: clamp(3rem, 8vh, 5rem);
   padding-top: 2rem;
-  border-top: 1px solid var(--hairline);
   width: min(30rem, 100%);
 }
 

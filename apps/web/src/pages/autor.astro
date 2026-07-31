@@ -11,7 +11,6 @@ if (!author) {
 }
 
 const blocks: any[] = Array.isArray(author.body) ? author.body : []
-const socials = Object.entries(author.social ?? {})
 const nameChars = (() => {
   let ki = 0
   return author.name.split(" ").map((word) => word.split("").map((ch) => ({ ch, ki: ki++ })))
@@ -44,21 +43,12 @@ const nameChars = (() => {
 
       <div class="mono au-meta" data-reveal>
         {author.location && <span>{author.location}</span>}
-        {
-          socials.map(([platform, url]) => (
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {platform} ↗
-            </a>
-          ))
-        }
       </div>
     </header>
 
     <section class="chapter" aria-label="Sobre o autor">
       <div class="chapter-head">
-        <span class="mono">01</span>
         <h2>Sobre</h2>
-        <span class="rule" aria-hidden="true" />
       </div>
 
       <div class="au-grid">
@@ -84,9 +74,7 @@ const nameChars = (() => {
       posts.length > 0 && (
         <section class="chapter" aria-label="Ensaios do autor">
           <div class="chapter-head">
-            <span class="mono">02</span>
             <h2>Ensaios</h2>
-            <span class="rule" aria-hidden="true" />
           </div>
           <ul class="rows">
             {posts.map((post, i) => (

@@ -12,6 +12,7 @@
 }
 
 .a-cover-frame {
+  position: relative;
   height: min(64vh, 46rem);
   overflow: hidden;
   background: var(--paper-dim);
@@ -29,11 +30,6 @@
   margin: clamp(-9rem, -12vw, -4.5rem) auto 0;
   background: var(--paper);
   padding: clamp(2rem, 5vh, 3.5rem) var(--gutter) 0;
-}
-
-.a-hero.no-cover {
-  margin-top: 0;
-  padding-top: calc(var(--topbar-h) + clamp(2.5rem, 8vh, 6rem));
 }
 
 .a-kicker {
@@ -196,9 +192,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--hairline);
+  margin-top: 1.5rem;
 }
 
 .a-nav a {
@@ -239,13 +233,6 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.next-kicker::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: color-mix(in srgb, var(--paper) 14%, transparent);
 }
 
 .next-body {

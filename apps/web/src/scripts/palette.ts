@@ -93,7 +93,7 @@ export function initPalette(): void {
           group: "Temas",
           title: t.t,
           meta: "Tema",
-          href: `/?topic=${t.s}`,
+          href: `/topic/${t.s}`,
         })),
         { group: "Páginas", title: "Todos os ensaios", meta: "Início", href: "/" },
         { group: "Páginas", title: "Sobre o autor", meta: "Autor", href: "/autor" },
@@ -116,7 +116,7 @@ export function initPalette(): void {
 
     const topics = index.topics
       .filter((t) => fuzzyScore(q, t.t) > 0)
-      .map((t) => ({ group: "Temas", title: t.t, meta: "Tema", href: `/?topic=${t.s}` }))
+      .map((t) => ({ group: "Temas", title: t.t, meta: "Tema", href: `/topic/${t.s}` }))
 
     return [...posts, ...topics]
   }

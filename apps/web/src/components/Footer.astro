@@ -1,5 +1,6 @@
 ---
 import type { Author } from "@blog/domain"
+import SpinningRing from "./SpinningRing.astro"
 
 interface Props {
   author: Author | null
@@ -7,8 +8,6 @@ interface Props {
 }
 
 const { author, siteTitle } = Astro.props
-const socials = Object.entries(author?.social ?? {})
-const year = new Date().getFullYear()
 ---
 
 <footer class="footer">
@@ -33,21 +32,6 @@ const year = new Date().getFullYear()
           {author?.bio && <p class="footer-bio">{author.bio}</p>}
         </div>
       </a>
-      {
-        socials.length > 0 && (
-          <div class="footer-author-socials">
-            <ul class="footer-social mono">
-              {socials.map(([platform, url]) => (
-                <li>
-                  <a href={url} target="_blank" rel="noopener noreferrer">
-                    {platform} ↗
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
     </div>
     <nav class="footer-links mono" aria-label="Rodapé">
       <a href="/">Ensaios</a>
@@ -57,16 +41,16 @@ const year = new Date().getFullYear()
     </nav>
   </div>
 
-  <div class="footer-word" aria-hidden="true">
-    {
-      siteTitle
-        .split("")
-        .map((ch) => (ch === "." ? <span class="accent">.</span> : ch))
-    }
-  </div>
-
-  <div class="footer-base mono">
-    <span>© {year} {siteTitle}</span>
-    <a href="/rss.xml">Assinar via RSS</a>
+  <div class="footer-word-row">
+    <div class="footer-word" aria-hidden="true">
+      {
+        siteTitle
+          .split("")
+          .map((ch) => (ch === "." ? <span class="accent">.</span> : ch))
+      }
+    </div>
+    <div class="footer-spin-section">
+      <SpinningRing />
+    </div>
   </div>
 </footer>

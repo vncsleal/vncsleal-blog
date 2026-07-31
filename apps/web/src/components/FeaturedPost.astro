@@ -1,0 +1,98 @@
+---
+import type { Post } from "@blog/domain"
+import { img, formatDate } from "../lib/utils"
+
+interface Props {
+  posts: Post[]
+}
+
+const { posts } = Astro.props
+const [main, sideA, sideB] = posts
+---
+
+<section class="chapter" aria-label="Ensaios em destaque">
+  <div class="featured-grid">
+    {
+      main && (
+        <a
+          class="featured-main"
+          href={`/${main.slug}`}
+          data-hero={main.cover ? img(main.cover, 1600) : undefined}
+        >
+          <div class="featured-cover" data-parallax>
+            {
+              main.cover ? (
+                <img
+                  src={img(main.cover, 1600)}
+                  alt=""
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              ) : (
+                <div class="cover-fallback" aria-hidden="true">
+                  {main.title.charAt(0)}
+                </div>
+              )
+            }
+          </div>
+          <div class="featured-body">
+            <p class="mono featured-meta">
+              <span>{formatDate(main.date)}</span>
+              {main.topics?.map((t) => <span>{t}</span>)}
+            </p>
+            <h3 data-reveal>{main.title}</h3>
+            {main.description && (
+              <p class="featured-desc" data-reveal>
+                {main.description}
+              </p>
+            )}
+            <span class="mono featured-read">
+              Ler ensaio <span class="arrow" aria-hidden="true">→</span>
+            </span>
+          </div>
+        </a>
+      )
+    }
+
+    <div class="featured-side">
+      {
+        [sideA, sideB]
+          .filter(Boolean)
+          .map((post) => (
+            <a
+              class="featured-side-item"
+              href={`/${post.slug}`}
+              data-hero={post.cover ? img(post.cover, 1200) : undefined}
+            >
+              <div class="featured-side-cover">
+                {
+                  post.cover ? (
+                    <img src={img(post.cover, 900)} alt="" loading="lazy" />
+                  ) : (
+                    <div class="cover-fallback" aria-hidden="true">
+                      {post.title.charAt(0)}
+                    </div>
+                  )
+                }
+              </div>
+              <div class="featured-side-body">
+                <p class="mono featured-side-meta">
+                  <span>{formatDate(post.date)}</span>
+                  {post.topics?.[0] && <span>{post.topics[0]}</span>}
+                </p>
+                <h3 data-reveal>{post.title}</h3>
+                {post.description && (
+                  <p class="featured-side-desc" data-reveal>
+                    {post.description}
+                  </p>
+                )}
+                <span class="mono featured-read">
+                  Ler ensaio <span class="arrow" aria-hidden="true">→</span>
+                </span>
+              </div>
+            </a>
+          ))
+      }
+    </div>
+  </div>
+</section>
