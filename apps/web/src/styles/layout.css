@@ -191,30 +191,30 @@
   align-items: flex-start;
   gap: 3rem;
   flex-wrap: wrap;
-}
-
-.footer-author {
-  max-width: 34rem;
-}
-
-.footer-author-link {
-  display: flex;
-  gap: 1.5rem;
-  text-decoration: none;
+  position: relative;
   padding: 1.25rem;
   border-radius: 6px;
-  position: relative;
   transition: background 0.3s ease;
 }
 
-.footer-author-link:hover {
+.footer-grid:hover {
   background: var(--paper-dim);
 }
 
-.footer-author-link::after {
+.footer-grid:hover .footer-name {
+  color: var(--accent);
+}
+
+.footer-author {
+  flex: 1;
+  min-width: min(100%, 34rem);
+  position: relative;
+}
+
+.footer-author::after {
   content: "→";
   position: absolute;
-  right: 1.25rem;
+  right: 0;
   top: 50%;
   transform: translateY(-50%) translateX(-4px);
   color: var(--accent);
@@ -224,13 +224,15 @@
     transform 0.35s var(--ease-expo);
 }
 
-.footer-author-link:hover::after {
+.footer-grid:hover .footer-author::after {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
 
-.footer-author-link:hover .footer-name {
-  color: var(--accent);
+.footer-author-link {
+  display: flex;
+  gap: 1.5rem;
+  text-decoration: none;
 }
 
 .footer-photo {
@@ -255,7 +257,7 @@
 }
 
 .footer-author-socials {
-  padding: 0.25rem 1.25rem 1.25rem;
+  margin-top: 0.75rem;
 }
 
 .footer-bio {
@@ -288,6 +290,7 @@
   flex-direction: column;
   gap: 0.75rem;
   text-align: right;
+  flex-shrink: 0;
 }
 
 .footer-links a {
