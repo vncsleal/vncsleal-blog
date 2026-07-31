@@ -7,11 +7,6 @@ import { store } from "../adapters/sanity"
 import { compilePost } from "@blog/artifacts"
 import { img, formatDateLong, formatDate, readingTime } from "../lib/utils"
 
-export async function getStaticPaths() {
-  const posts = await store.getPosts()
-  return posts.map((post) => ({ params: { slug: post.slug } }))
-}
-
 const { slug } = Astro.params
 
 const [postData, authorData, allPosts] = await Promise.all([
