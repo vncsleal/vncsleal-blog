@@ -28,7 +28,6 @@ const authorQuery = `*[_type == "author" && defined(slug.current)][0]{
   email,
   tagline,
   location,
-  bio,
   "body": body[]{
     _key,
     _type,

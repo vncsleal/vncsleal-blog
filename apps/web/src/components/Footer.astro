@@ -29,7 +29,7 @@ const { author, siteTitle } = Astro.props
         <div>
           <p class="mono footer-kicker">Sobre o autor</p>
           <p class="footer-name">{author?.name ?? "O Autor"}</p>
-          {author?.bio && <p class="footer-bio">{author.bio}</p>}
+          {author?.tagline && <p class="footer-bio">{author.tagline}</p>}
         </div>
       </a>
     </div>

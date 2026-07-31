@@ -10,3 +10,4 @@ dist/
 .astro/
 .wrangler/
 .dev.vars
+.sanity/

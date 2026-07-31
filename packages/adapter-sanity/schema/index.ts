@@ -12,7 +12,6 @@ const author = defineType({
     defineField({ name: "email", type: "string" }),
     defineField({ name: "tagline", type: "string", title: "Tagline" }),
     defineField({ name: "location", type: "string", title: "Location" }),
-    defineField({ name: "bio", type: "text" }),
     defineField({
       name: "body",
       title: "About",
