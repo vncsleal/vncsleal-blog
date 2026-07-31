@@ -4,7 +4,7 @@ export interface CompiledHome {
   pageTitle: string
   seoTitle: string | null
   seoDescription: string | null
-  announcement: string | null
+  tagline: string | null
   author: Author | null
 }
 
@@ -13,7 +13,7 @@ export function compileHome(author: Author | null, home: Home | null): CompiledH
     pageTitle: home?.pageTitle ?? "VNCS.",
     seoTitle: home?.seoTitle ?? null,
     seoDescription: home?.seoDescription ?? null,
-    announcement: home?.announcement ?? null,
+    tagline: home?.tagline ?? null,
     author,
   }
 }

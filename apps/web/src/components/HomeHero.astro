@@ -1,12 +1,12 @@
 ---
 interface Props {
   pageTitle: string
-  seoDescription: string | null
+  tagline: string | null
   topics: { slug: string; title: string }[]
   activeTopic: string | null
 }
 
-const { pageTitle, seoDescription, topics, activeTopic } = Astro.props
+const { pageTitle, tagline, topics, activeTopic } = Astro.props
 
 const titleChars = (() => {
   let ki = 0
@@ -36,7 +36,7 @@ const titleChars = (() => {
 
   <div class="hero-foot">
     <p class="hero-sub" data-reveal>
-      {seoDescription ?? "Ensaios sobre tecnologia, cultura e o ofício de fazer."}
+      {tagline ?? "Ensaios sobre tecnologia, cultura e o ofício de fazer."}
     </p>
   </div>
 

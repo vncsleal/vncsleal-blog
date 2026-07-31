@@ -98,7 +98,7 @@ const home = defineType({
     defineField({ name: "pageTitle", type: "string", validation: (r) => r.required() }),
     defineField({ name: "seoTitle", type: "string" }),
     defineField({ name: "seoDescription", type: "text" }),
-    defineField({ name: "announcement", type: "text" }),
+    defineField({ name: "tagline", type: "string", title: "Tagline" }),
   ],
 })
 
@@ -111,6 +111,7 @@ const blog = defineType({
     defineField({ name: "pageTitle", type: "string", validation: (r) => r.required() }),
     defineField({ name: "seoTitle", type: "string" }),
     defineField({ name: "seoDescription", type: "text" }),
+    defineField({ name: "tagline", type: "string", title: "Tagline" }),
     defineField({ name: "emptyState", type: "text" }),
   ],
 })

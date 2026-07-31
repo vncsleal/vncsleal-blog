@@ -128,7 +128,7 @@ export function createStore(client: SanityClient): ContentStore {
         pageTitle,
         seoTitle,
         seoDescription,
-        announcement
+        tagline
       }`)
       if (!data) return null
       return parseDoc(Home, data, "home")
@@ -139,6 +139,7 @@ export function createStore(client: SanityClient): ContentStore {
         pageTitle,
         seoTitle,
         seoDescription,
+        tagline,
         emptyState
       }`)
       if (!data) return null
