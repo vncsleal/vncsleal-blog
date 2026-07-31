@@ -18,24 +18,35 @@ export function initKinetic(settleMs = 0): void {
 
   if (reduced() || !finePointer()) return
 
-  // Pointer-reactive variable font weight, after the entrance settles
-  const charsByRoot = roots.map((root) =>
-    Array.from(root.querySelectorAll<HTMLElement>(".kn-char"))
-  )
-  const chars = charsByRoot.flat()
-  if (chars.length === 0) return
+  // Pointer-reactive variable font weight, after the entrance settles.
+  // Each char modulates from its CSS-defined base weight/width up to 900,
+  // so moving the cursor away never changes the designed typography.
+  const charData: { ch: HTMLElement; baseWght: number; baseWdth: number }[] = []
+
+  roots.forEach((root) => {
+    const fs = getComputedStyle(root).fontVariationSettings
+    const wghtMatch = fs.match(/"wght"\s+([\d.]+)/)
+    const wdthMatch = fs.match(/"wdth"\s+([\d.]+)/)
+    const baseWght = wghtMatch ? parseFloat(wghtMatch[1]) : 800
+    const baseWdth = wdthMatch ? parseFloat(wdthMatch[1]) : 125
+    root.querySelectorAll<HTMLElement>(".kn-char").forEach((ch) => {
+      charData.push({ ch, baseWght, baseWdth })
+    })
+  })
+
+  if (charData.length === 0) return
 
   let active = false
   const activeTimer = window.setTimeout(() => {
     active = true
-  }, settleMs + 1050 + chars.length * 45)
+  }, settleMs + 1050 + charData.length * 45)
   onCleanup(() => window.clearTimeout(activeTimer))
 
   const radius = 260
 
   onFrame(() => {
     if (!active) return
-    for (const ch of chars) {
+    for (const { ch, baseWght, baseWdth } of charData) {
       const rect = ch.getBoundingClientRect()
       if (rect.bottom < 0 || rect.top > window.innerHeight) continue
       const cx = rect.left + rect.width / 2
@@ -45,9 +56,9 @@ export function initKinetic(settleMs = 0): void {
       const dist = Math.hypot(dx, dy)
       const f = Math.max(0, 1 - dist / radius)
       const eased = f * f * (3 - 2 * f) // smoothstep
-      const wght = Math.round(700 + eased * 200)
+      const wght = Math.round(baseWght + eased * (900 - baseWght))
       const lift = (-eased * 0.04).toFixed(3)
-      ch.style.fontVariationSettings = `"wght" ${wght}, "wdth" 125`
+      ch.style.fontVariationSettings = `"wght" ${wght}, "wdth" ${baseWdth}`
       ch.style.transform = eased > 0.01 ? `translateY(${lift}em)` : ""
     }
   })
