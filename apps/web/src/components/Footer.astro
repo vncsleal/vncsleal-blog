@@ -14,27 +14,28 @@ const year = new Date().getFullYear()
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-author">
-      {
-        author?.photo && (
-          <img
-            class="footer-photo"
-            src={`${author.photo}?w=144&h=144&fit=crop&auto=format`}
-            alt={author.name}
-            width="72"
-            height="72"
-            loading="lazy"
-          />
-        )
-      }
-      <div>
-        <p class="mono footer-kicker">Sobre o autor</p>
-        <p class="footer-name">
-          <a href="/autor">{author?.name ?? "O Autor"}</a>
-        </p>
-        {author?.bio && <p class="footer-bio">{author.bio}</p>}
-        <a class="mono footer-profile" href="/autor">Perfil completo →</a>
+      <a class="footer-author-link" href="/autor" aria-label={`Página do autor — ${author?.name ?? "O Autor"}`}>
         {
-          socials.length > 0 && (
+          author?.photo && (
+            <img
+              class="footer-photo"
+              src={`${author.photo}?w=144&h=144&fit=crop&auto=format`}
+              alt={author.name}
+              width="72"
+              height="72"
+              loading="lazy"
+            />
+          )
+        }
+        <div>
+          <p class="mono footer-kicker">Sobre o autor</p>
+          <p class="footer-name">{author?.name ?? "O Autor"}</p>
+          {author?.bio && <p class="footer-bio">{author.bio}</p>}
+        </div>
+      </a>
+      {
+        socials.length > 0 && (
+          <div class="footer-author-socials">
             <ul class="footer-social mono">
               {socials.map(([platform, url]) => (
                 <li>
@@ -44,9 +45,9 @@ const year = new Date().getFullYear()
                 </li>
               ))}
             </ul>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
     </div>
     <nav class="footer-links mono" aria-label="Rodapé">
       <a href="/">Ensaios</a>
