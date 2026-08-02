@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro"
 import Blocks from "../components/Blocks.astro"
 import { store } from "../adapters/sanity"
-import { img, formatDate } from "../lib/utils"
+import { img, cappedSrcset, coverSize, coverStyle, heroCover, formatDate } from "../lib/utils"
 
 const [author, posts] = await Promise.all([store.getAuthor(), store.getPosts()])
 
@@ -55,7 +55,15 @@ const nameChars = (() => {
         <div class="au-portrait" data-reveal>
           {
             author.photo ? (
-              <img src={img(author.photo, 880)} alt={author.name} loading="eager" />
+              <img
+                src={img(author.photo, 640)}
+                srcset={cappedSrcset(author.photo, [440, 640, 880, 1121], author.photoWidth)}
+                sizes="20rem"
+                alt={author.name}
+                width={author.photoWidth}
+                height={author.photoHeight}
+                loading="eager"
+              />
             ) : (
               <div class="au-monogram" aria-hidden="true">
                 V<span class="accent">.</span>
@@ -81,8 +89,8 @@ const nameChars = (() => {
               <li class="row" data-reveal>
                 <a
                   href={`/${post.slug}`}
-                  data-preview={post.cover ? img(post.cover, 840) : undefined}
-                  data-hero={post.cover ? img(post.cover, 1600) : undefined}
+                  data-preview={post.cover ? img(post.cover, 840, post) : undefined}
+                  data-hero={heroCover(post)}
                 >
                   <span class="mono row-idx">{String(i + 1).padStart(2, "0")}</span>
                   <span class="row-main">
@@ -100,7 +108,15 @@ const nameChars = (() => {
                     )}
                   </span>
                   {post.cover && (
-                    <img class="row-thumb" src={img(post.cover, 480)} alt="" loading="lazy" />
+                    <img
+                      class="row-thumb"
+                      src={img(post.cover, 336, post)}
+                      alt=""
+                      width={coverSize(post).width}
+                      height={coverSize(post).height}
+                      style={coverStyle(post)}
+                      loading="lazy"
+                    />
                   )}
                   <span class="row-arrow" aria-hidden="true">
                     →

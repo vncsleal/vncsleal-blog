@@ -1,6 +1,6 @@
 ---
 import type { Post } from "@blog/domain"
-import { img, formatDate } from "../lib/utils"
+import { img, coverSize, coverStyle, heroCover, formatDate } from "../lib/utils"
 
 interface Props {
   posts: Post[]
@@ -18,8 +18,8 @@ const { posts, startNumber, className } = Astro.props
         <li class="row" data-reveal>
           <a
             href={`/${post.slug}`}
-            data-preview={post.cover ? img(post.cover, 840) : undefined}
-            data-hero={post.cover ? img(post.cover, 1600) : undefined}
+            data-preview={post.cover ? img(post.cover, 840, post) : undefined}
+            data-hero={heroCover(post)}
           >
             <span class="mono row-idx">{String(startNumber + i).padStart(2, "0")}</span>
             <span class="row-main">
@@ -37,7 +37,15 @@ const { posts, startNumber, className } = Astro.props
               )}
             </span>
             {post.cover && (
-              <img class="row-thumb" src={img(post.cover, 480)} alt="" loading="lazy" />
+              <img
+                class="row-thumb"
+                src={img(post.cover, 336, post)}
+                alt=""
+                width={coverSize(post).width}
+                height={coverSize(post).height}
+                style={coverStyle(post)}
+                loading="lazy"
+              />
             )}
             <span class="row-arrow" aria-hidden="true">
               →

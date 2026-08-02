@@ -193,8 +193,9 @@
 .featured-cover {
   position: relative;
   overflow: hidden;
-  flex: 1;
-  min-height: 16rem;
+  /* Fixed ratio so the cover crops horizontally (plenty of source
+     resolution) instead of upscaling vertically to fill the column. */
+  aspect-ratio: 16 / 10;
   background: var(--paper-dim);
 }
 
@@ -349,7 +350,9 @@
 
 .row-thumb {
   width: 7rem;
-  aspect-ratio: 4 / 3;
+  /* explicit height — the width/height attributes on the img override
+     aspect-ratio, so a ratio-only rule here breaks the thumb box */
+  height: 5.25rem; /* 7rem * 4/3 */
   object-fit: cover;
   background: var(--paper-dim);
 }
@@ -480,6 +483,7 @@
 
   .row-thumb {
     width: 4.5rem;
+    height: 3.375rem; /* 4.5rem * 3/4 */
   }
 
   .featured-body {

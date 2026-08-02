@@ -5,7 +5,7 @@ import Lightbox from "../components/Lightbox.astro"
 import Blocks from "../components/Blocks.astro"
 import { store } from "../adapters/sanity"
 import { compilePost } from "@blog/artifacts"
-import { img, formatDateLong, formatDate, readingTime } from "../lib/utils"
+import { img, coverSrcset, coverSize, coverStyle, heroCover, formatDateLong, formatDate, readingTime } from "../lib/utils"
 
 export async function getStaticPaths() {
   const posts = await store.getPosts()
@@ -49,8 +49,13 @@ const titleChars = (() => {
         {
           post.cover ? (
             <img
-              src={img(post.cover, 1600)}
+              src={img(post.cover, 640, post)}
+              srcset={coverSrcset(post, [640, 1024, 1408, 1920, 2560, 3200])}
+              sizes="100vw"
               alt=""
+              width={coverSize(post).width}
+              height={coverSize(post).height}
+              style={coverStyle(post)}
               loading="eager"
               fetchpriority="high"
             />
@@ -127,7 +132,7 @@ const titleChars = (() => {
       <section class="next-story">
         <a
           href={`/${nextStory.slug}`}
-          data-hero={nextStory.cover ? img(nextStory.cover, 1600) : undefined}
+          data-hero={heroCover(nextStory)}
         >
           <p class="mono next-kicker">Próximo ensaio</p>
           <div class="next-body">
@@ -141,8 +146,13 @@ const titleChars = (() => {
             {nextStory.cover && (
               <div class="next-cover">
                 <img
-                  src={img(nextStory.cover, 960)}
+                  src={img(nextStory.cover, 480, nextStory)}
+                  srcset={coverSrcset(nextStory, [480, 768, 960, 1440])}
+                  sizes="(max-width: 800px) 100vw, 26rem"
                   alt=""
+                  width={coverSize(nextStory).width}
+                  height={coverSize(nextStory).height}
+                  style={coverStyle(nextStory)}
                   loading="lazy"
                 />
               </div>

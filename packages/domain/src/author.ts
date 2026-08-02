@@ -8,6 +8,8 @@ export const Author = z.object({
   location: z.string().optional(),
   body: z.any().optional(),
   photo: z.string().optional(),
+  photoWidth: z.number().optional(),
+  photoHeight: z.number().optional(),
   social: z.record(z.string(), z.string()).optional(),
 })
 

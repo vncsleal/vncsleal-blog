@@ -24,8 +24,9 @@ export function initLightbox(): void {
   const open = (img: HTMLImageElement) => {
     const src = img.currentSrc || img.src
     if (!src) return
-    // Request a larger rendition from the CDN
-    dialogImg.src = src.replace(/w=\d+/, "w=1800")
+    // Request a larger rendition from the CDN, capped at the source width
+    const full = Math.min(Number(img.dataset.fullWidth) || 2400, 2400)
+    dialogImg.src = src.replace(/w=\d+/, `w=${full}`)
     dialog.showModal()
     requestAnimationFrame(() => dialog.classList.add("is-open"))
     scrollLock(true)

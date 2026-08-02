@@ -22,6 +22,15 @@ function parseDoc<T>(schema: z.ZodSchema<T>, data: unknown, source: string): T {
   return result.data
 }
 
+const bodyImageFields = `"url": asset->url,
+    "dimensions": asset->metadata.dimensions`
+
+const coverFields = `"cover": cover.asset->url,
+  "coverWidth": cover.asset->metadata.dimensions.width,
+  "coverHeight": cover.asset->metadata.dimensions.height,
+  "coverCrop": cover.crop,
+  "coverHotspot": cover.hotspot`
+
 const authorQuery = `*[_type == "author" && defined(slug.current)][0]{
   name,
   "slug": slug.current,
@@ -37,7 +46,7 @@ const authorQuery = `*[_type == "author" && defined(slug.current)][0]{
       _type,
       href
     },
-    "url": asset->url,
+    ${bodyImageFields},
     children[]{
       _key,
       _type,
@@ -46,6 +55,8 @@ const authorQuery = `*[_type == "author" && defined(slug.current)][0]{
     }
   },
   "photo": photo.asset->url,
+  "photoWidth": photo.asset->metadata.dimensions.width,
+  "photoHeight": photo.asset->metadata.dimensions.height,
   "social": coalesce(social[]{platform, url}, [])
 }`
 
@@ -55,7 +66,7 @@ const postsQuery = `*[_type == "post" && defined(slug.current)] | order(date des
   "author": author->slug.current,
   description,
   date,
-  "cover": cover.asset->url,
+  ${coverFields},
   "topics": topics[]->slug.current
 }`
 
@@ -65,7 +76,7 @@ const postQuery = `*[_type == "post" && slug.current == $slug][0]{
   "author": author->slug.current,
   description,
   date,
-  "cover": cover.asset->url,
+  ${coverFields},
   "body": body[]{
     _key,
     _type,
@@ -75,7 +86,7 @@ const postQuery = `*[_type == "post" && slug.current == $slug][0]{
       _type,
       href
     },
-    "url": asset->url,
+    ${bodyImageFields},
     children[]{
       _key,
       _type,

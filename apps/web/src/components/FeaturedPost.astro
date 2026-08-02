@@ -1,6 +1,6 @@
 ---
 import type { Post } from "@blog/domain"
-import { img, formatDate } from "../lib/utils"
+import { img, coverSrcset, coverSize, coverStyle, heroCover, formatDate } from "../lib/utils"
 
 interface Props {
   posts: Post[]
@@ -17,14 +17,19 @@ const [main, sideA, sideB] = posts
         <a
           class="featured-main"
           href={`/${main.slug}`}
-          data-hero={main.cover ? img(main.cover, 1600) : undefined}
+          data-hero={heroCover(main)}
         >
           <div class="featured-cover" data-parallax>
             {
               main.cover ? (
                 <img
-                  src={img(main.cover, 1600)}
+                  src={img(main.cover, 640, main)}
+                  srcset={coverSrcset(main, [640, 900, 1200, 1600, 1920])}
+                  sizes="(max-width: 900px) 100vw, min(60vw, 910px)"
                   alt=""
+                  width={coverSize(main).width}
+                  height={coverSize(main).height}
+                  style={coverStyle(main)}
                   loading="eager"
                   fetchpriority="high"
                 />
@@ -62,12 +67,21 @@ const [main, sideA, sideB] = posts
             <a
               class="featured-side-item"
               href={`/${post.slug}`}
-              data-hero={post.cover ? img(post.cover, 1200) : undefined}
+              data-hero={heroCover(post)}
             >
               <div class="featured-side-cover">
                 {
                   post.cover ? (
-                    <img src={img(post.cover, 900)} alt="" loading="lazy" />
+                    <img
+                      src={img(post.cover, 480, post)}
+                      srcset={coverSrcset(post, [480, 640, 800, 900, 1200, 1408])}
+                      sizes="(min-width: 900px) 40vw, 100vw"
+                      alt=""
+                      width={coverSize(post).width}
+                      height={coverSize(post).height}
+                      style={coverStyle(post)}
+                      loading="lazy"
+                    />
                   ) : (
                     <div class="cover-fallback" aria-hidden="true">
                       {post.title.charAt(0)}
