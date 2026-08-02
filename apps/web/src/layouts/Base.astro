@@ -58,9 +58,33 @@ const searchIndex = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex Mono:wght@400;500&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap"
       rel="stylesheet"
     />
+    <script is:inline>
+      // Daily accent: deterministic per weekday (America/Sao_Paulo), so the
+      // static site rotates colors without any redeploy. ?accent=#hex overrides
+      // (useful to preview other days).
+      const ACCENT_DAYS = {
+        Sun: "#7e22ce",
+        Mon: "#dc2626",
+        Tue: "#cc4a09",
+        Wed: "#b85c08",
+        Thu: "#15803d",
+        Fri: "#1d4ed8",
+        Sat: "#4338ca",
+      }
+      const override = new URLSearchParams(location.search).get("accent")
+      const weekday = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Sao_Paulo",
+        weekday: "short",
+      }).format(new Date())
+      const accent =
+        override && /^#[0-9a-fA-F]{6}$/.test(override)
+          ? override
+          : ACCENT_DAYS[weekday] ?? "#e8321e"
+      document.documentElement.style.setProperty("--accent", accent)
+    </script>
   </head>
   <body>
     <TopBar siteTitle={siteTitle} />

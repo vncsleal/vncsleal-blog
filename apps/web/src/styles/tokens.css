@@ -3,6 +3,14 @@
    Light editorial system. Signal red accent.
    ───────────────────────────────────────────── */
 
+/* Daily accent: registered as a color so the midnight swap can crossfade.
+   --accent is overridden per weekday by a tiny script in Base.astro. */
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e8321e;
+}
+
 :root {
   /* Color */
   --paper: #ffffff;
@@ -11,8 +19,9 @@
   --ink-soft: #54545a;
   --ink-mute: #9b9ba1;
   --hairline: #e8e8e6;
-  --accent: #e8321e;
+  --accent: #e8321e; /* fallback for no-JS visitors; script overrides per weekday */
   --accent-deep: #c42412;
+  transition: --accent 0.9s var(--ease-expo);
 
   /* Typography */
   --font-display: "Archivo", "Inter Tight", system-ui, -apple-system, sans-serif;
