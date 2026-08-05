@@ -46,7 +46,7 @@ const pageTitle = title
     : `${title} — ${siteTitle}`
   : siteTitle
 
-const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/"
+const pathname = Astro.url.pathname === "/" ? "/" : `${Astro.url.pathname.replace(/\/+$/, "")}/`
 const canonical = absolute(pathname)
 
 const webSiteLd = {

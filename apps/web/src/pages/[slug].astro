@@ -52,7 +52,7 @@ const jsonLd = {
   keywords: post.topics,
   author: author ? { "@type": "Person", name: author.name, url: absolute("/autor") } : undefined,
   publisher: { "@type": "Organization", name: "VNCS." },
-  mainEntityOfPage: absolute(`/${post.slug}`),
+  mainEntityOfPage: absolute(`/${post.slug}/`),
 }
 ---
 
