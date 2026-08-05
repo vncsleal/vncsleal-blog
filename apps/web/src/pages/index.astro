@@ -6,6 +6,7 @@ import PostRows from "../components/PostRows.astro"
 import Pagination from "../components/Pagination.astro"
 import { store } from "../adapters/sanity"
 import { compileBlog } from "@blog/artifacts"
+import { ogImage } from "../lib/utils"
 
 const PER_PAGE = 8
 
@@ -28,7 +29,11 @@ const listPosts = rest.slice(0, PER_PAGE - 3)
 const totalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE))
 ---
 
-<Base title={page.seoTitle ?? null} description={page.seoDescription}>
+<Base
+  title={page.seoTitle ?? null}
+  description={page.seoDescription ?? page.tagline ?? undefined}
+  ogImage={posts[0] ? ogImage(posts[0]) : undefined}
+>
   <main class="home">
     <HomeHero
       pageTitle={page.pageTitle}

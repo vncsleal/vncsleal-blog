@@ -33,7 +33,10 @@ const [main, sideA, sideB, ...rest] = page.posts
 const featured = [main, sideA, sideB].filter(Boolean)
 ---
 
-<Base title={page.seoTitle ?? null} description={page.seoDescription}>
+<Base
+  title={page.seoTitle ?? null}
+  description={page.seoDescription ?? activeTopic?.description ?? page.tagline ?? undefined}
+>
   <main class="home">
     <HomeHero
       pageTitle={page.pageTitle}

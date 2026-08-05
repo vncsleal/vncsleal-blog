@@ -2,6 +2,7 @@
 import "../styles/global.css"
 import { ClientRouter } from "astro:transitions"
 import { store } from "../adapters/sanity"
+import { absolute } from "../lib/utils"
 import TopBar from "../components/TopBar.astro"
 import Footer from "../components/Footer.astro"
 import CommandPalette from "../components/CommandPalette.astro"
@@ -10,9 +11,26 @@ import CursorPreview from "../components/CursorPreview.astro"
 interface Props {
   title?: string | null
   description?: string | null
+  ogImage?: string | null
+  type?: "website" | "article"
+  article?: {
+    publishedTime: string
+    author?: string
+    tags?: string[]
+  } | null
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  noindex?: boolean
 }
 
-const { title, description } = Astro.props
+const {
+  title,
+  description,
+  ogImage,
+  type = "website",
+  article = null,
+  jsonLd,
+  noindex = false,
+} = Astro.props
 
 const [posts, topics, author, blog] = await Promise.all([
   store.getPosts(),
@@ -27,6 +45,16 @@ const pageTitle = title
     ? title
     : `${title} — ${siteTitle}`
   : siteTitle
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/"
+const canonical = absolute(pathname)
+
+const webSiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteTitle,
+  url: absolute("/"),
+}
 
 const searchIndex = {
   posts: posts.map((p) => ({
@@ -48,11 +76,31 @@ const searchIndex = {
     <ClientRouter />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description ?? pageTitle} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteTitle} />
-    <meta property="og:type" content="website" />
-    {description && <meta property="og:description" content={description} />}
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content={type} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {article && (
+      <>
+        <meta property="article:published_time" content={article.publishedTime} />
+        {article.author && <meta property="article:author" content={article.author} />}
+        {article.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+      </>
+    )}
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={pageTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd ?? webSiteLd).replace(/</g, "\\u003c")}
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

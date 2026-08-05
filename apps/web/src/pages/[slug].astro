@@ -5,7 +5,7 @@ import Lightbox from "../components/Lightbox.astro"
 import Blocks from "../components/Blocks.astro"
 import { store } from "../adapters/sanity"
 import { compilePost } from "@blog/artifacts"
-import { img, coverSrcset, coverSize, coverStyle, heroCover, formatDateLong, formatDate, readingTime } from "../lib/utils"
+import { img, coverSrcset, coverSize, coverStyle, heroCover, ogImage, absolute, formatDateLong, formatDate, readingTime } from "../lib/utils"
 
 export async function getStaticPaths() {
   const posts = await store.getPosts()
@@ -38,9 +38,32 @@ const titleChars = (() => {
   let ki = 0
   return post.title.split(" ").map((word) => word.split("").map((ch) => ({ ch, ki: ki++ })))
 })()
+
+const shareImage = ogImage(post)
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.description,
+  image: shareImage,
+  datePublished: post.date,
+  dateModified: post.date,
+  keywords: post.topics,
+  author: author ? { "@type": "Person", name: author.name, url: absolute("/autor") } : undefined,
+  publisher: { "@type": "Organization", name: "VNCS." },
+  mainEntityOfPage: absolute(`/${post.slug}`),
+}
 ---
 
-<Base title={post.title} description={post.description}>
+<Base
+  title={post.title}
+  description={post.description}
+  ogImage={shareImage}
+  type="article"
+  article={{ publishedTime: post.date, author: author?.name, tags: post.topics }}
+  jsonLd={jsonLd}
+>
   <ProgressBar />
 
   <article class="article">

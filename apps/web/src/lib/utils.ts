@@ -82,6 +82,49 @@ export const heroCover = (cover: CoverMeta | undefined): string | undefined =>
     ? img(cover.cover, Math.min(cover.coverWidth ?? 3200, 3200), cover)
     : undefined
 
+/** Social share image (1200x630) honoring the editor crop + hotspot, without
+    upscaling past the source. Absolute CDN URL, ready for og:image. */
+export const ogImage = (cover: CoverMeta | undefined): string | undefined => {
+  if (!cover?.cover) return undefined
+  const w = cover.coverWidth ?? 0
+  const h = cover.coverHeight ?? 0
+  if (!w || !h) return undefined
+
+  const crop = cover.coverCrop ?? { left: 0, top: 0, right: 0, bottom: 0 }
+  const rect = {
+    x: clamp01(crop.left) * w,
+    y: clamp01(crop.top) * h,
+    w: w * (1 - clamp01(crop.left) - clamp01(crop.right)),
+    h: h * (1 - clamp01(crop.top) - clamp01(crop.bottom)),
+  }
+
+  // Fit the target aspect inside the editor crop, centered on the hotspot.
+  const TARGET = 1200 / 630
+  if (rect.w / rect.h > TARGET) {
+    const nw = rect.h * TARGET
+    const fx = cover.coverHotspot
+      ? clamp01((clamp01(cover.coverHotspot.x) - clamp01(crop.left)) / (1 - clamp01(crop.left) - clamp01(crop.right)))
+      : 0.5
+    rect.x = rect.x + fx * (rect.w - nw)
+    rect.w = nw
+  } else {
+    const nh = rect.w / TARGET
+    const fy = cover.coverHotspot
+      ? clamp01((clamp01(cover.coverHotspot.y) - clamp01(crop.top)) / (1 - clamp01(crop.top) - clamp01(crop.bottom)))
+      : 0.5
+    rect.y = rect.y + fy * (rect.h - nh)
+    rect.h = nh
+  }
+
+  const scale = Math.min(1, 1200 / rect.w)
+  const wOut = Math.max(1, Math.round(rect.w * scale))
+  const hOut = Math.max(1, Math.round(rect.h * scale))
+  const p = Math.round
+  return `${cover.cover}?rect=${p(rect.x)},${p(rect.y)},${p(rect.w)},${p(rect.h)}&w=${wOut}&h=${hOut}&fit=crop&auto=format&q=80`
+}
+
+export const absolute = (path: string): string => new URL(path, import.meta.env.SITE).href
+
 /** Date-only strings ("2026-06-25") parse as UTC midnight — which is the
     previous day in negative timezones. Anchor at local noon instead. */
 const parseDate = (date: string) =>

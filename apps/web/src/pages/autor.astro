@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro"
 import Blocks from "../components/Blocks.astro"
 import { store } from "../adapters/sanity"
-import { img, cappedSrcset, coverSize, coverStyle, heroCover, formatDate } from "../lib/utils"
+import { img, cappedSrcset, coverSize, coverStyle, heroCover, formatDate, absolute } from "../lib/utils"
 
 const [author, posts] = await Promise.all([store.getAuthor(), store.getPosts()])
 
@@ -15,9 +15,24 @@ const nameChars = (() => {
   let ki = 0
   return author.name.split(" ").map((word) => word.split("").map((ch) => ({ ch, ki: ki++ })))
 })()
+
+const socialUrls = Object.values(author.social ?? {}).filter(Boolean)
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: author.name,
+  url: absolute("/autor"),
+  image: author.photo ? img(author.photo, 640) : undefined,
+  description: author.tagline,
+  address: author.location
+    ? { "@type": "PostalAddress", addressLocality: author.location }
+    : undefined,
+  sameAs: socialUrls.length > 0 ? socialUrls : undefined,
+}
 ---
 
-<Base title={author.name} description={author.tagline}>
+<Base title={author.name} description={author.tagline} jsonLd={jsonLd}>
   <main class="author">
     <header class="au-hero">
       <p class="mono au-kicker" data-reveal>O autor</p>

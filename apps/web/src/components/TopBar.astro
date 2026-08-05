@@ -22,7 +22,7 @@ const dateLabel = today.toLocaleDateString("pt-BR", {
     }
   </a>
   <div class="topbar-side">
-    <time class="mono topbar-date" datetime={today.toISOString()}>{dateLabel}</time>
+    <time class="mono topbar-date" data-today datetime={today.toISOString()}>{dateLabel}</time>
     <button class="search-btn mono" type="button" data-palette-open aria-label="Abrir busca (Cmd+K)">
       <span>Buscar</span>
       <kbd>⌘K</kbd>

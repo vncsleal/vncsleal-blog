@@ -10,6 +10,17 @@ export function initTopBar(): void {
   const bar = document.querySelector<HTMLElement>("[data-topbar]")
   if (!bar) return
 
+  const todayEl = bar.querySelector<HTMLTimeElement>("[data-today]")
+  if (todayEl) {
+    const d = new Date()
+    todayEl.textContent = d.toLocaleDateString("pt-BR", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    })
+    todayEl.dateTime = d.toISOString()
+  }
+
   const wordmark = bar.querySelector<HTMLElement>("[data-wordmark]")
   // Only the home hero is the brand rendered huge — yield to it there.
   // Everywhere else (articles, 404) the wordmark stays as the way home.
